@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Variable;
 
 class ReportController extends Controller
 {
@@ -13,9 +14,9 @@ class ReportController extends Controller
         $rules = [
             'client_id' => 'required | exists:clients,id',
             'consume_kv_copel' => 'required | numeric | min:0',
-            'public_light_value' => 'required | numeric | min:0',
-            'ult_fatura_copel' => 'required | numeric | min:0',
-            'light_fase_copel' => 'required | numeric | min:0',
+            'public_light' => 'required | numeric | min:0',
+            'fatura_copel' => 'required | numeric | min:0',
+            'min_tax' => 'required | numeric | min:0',
             'percentage_value' => 'required | numeric | min:0',
         ];
 
@@ -24,15 +25,15 @@ class ReportController extends Controller
             'consume_kv_copel.required' => 'O campo consumo kv copel é obrigatório',
             'consume_kv_copel.numeric' => 'O campo consumo kv copel deve ser um número',
             'consume_kv_copel.min' => 'O campo consumo kv copel deve ser no mínimo 0',
-            'public_light_value.required' => 'O campo valor da luz pública é obrigatório',
-            'public_light_value.numeric' => 'O campo valor da luz pública deve ser um número',
-            'public_light_value.min' => 'O campo valor da luz pública deve ser no mínimo 0',
-            'ult_fatura_copel.required' => 'O campo última fatura copel é obrigatório',
-            'ult_fatura_copel.numeric' => 'O campo última fatura copel deve ser um número',
-            'ult_fatura_copel.min' => 'O campo última fatura copel deve ser no mínimo 0',
-            'light_fase_copel.required' => 'O campo luz fase copel é obrigatório',
-            'light_fase_copel.numeric' => 'O campo luz fase copel deve ser um número',
-            'light_fase_copel.min' => 'O campo luz fase copel deve ser no mínimo 0',
+            'public_light.required' => 'O campo valor da luz pública é obrigatório',
+            'public_light.numeric' => 'O campo valor da luz pública deve ser um número',
+            'public_light.min' => 'O campo valor da luz pública deve ser no mínimo 0',
+            'fatura_copel.required' => 'O campo última fatura copel é obrigatório',
+            'fatura_copel.numeric' => 'O campo última fatura copel deve ser um número',
+            'fatura_copel.min' => 'O campo última fatura copel deve ser no mínimo 0',
+            'min_tax.required' => 'O campo luz fase copel é obrigatório',
+            'min_tax.numeric' => 'O campo luz fase copel deve ser um número',
+            'min_tax.min' => 'O campo luz fase copel deve ser no mínimo 0',
             'percentage_value.required' => 'O campo valor percentual é obrigatório',
             'percentage_value.numeric' => 'O campo valor percentual deve ser um número',
             'percentage_value.min' => 'O campo valor percentual deve ser no mínimo 0',
@@ -46,10 +47,41 @@ class ReportController extends Controller
 
         $request['user_id'] = auth()->user()->id;
 
-        $report = Report::updateOrCreate(
-            ['client_id' => $request->client_id],
-            $request->all()
-        );
+        $report = new Report();
+
+        $report->fill($request->all());
+
+        info('Report created', $report->toArray());
+
+        $var_kvCopel = Variable::where('name', 'var_kvCopel')->first();
+
+        //Calculando o consumo final da copel
+        $report->consume_kv_copel_final = $report->consume_kv_copel * $var_kvCopel->value;
+
+        //Calculando o consumo da cooperativa
+        $report->consume_kv_coop = $report->consume_kv_copel - $report->min_tax;
+
+        //Calculando o consumo final da cooperativa
+        $report->consume_kv_coop_final = $report->consume_kv_coop * $report->percentage_value;
+
+        //Calculando a taxa tusd
+        $var_taxaTusd = Variable::where('name', 'var_taxaTusd')->first();
+        $report->taxa_tusd = $report->consume_kv_coop * $var_taxaTusd->value;
+
+        //Calculando o valor da fase
+        $report->fasic_value = $report->min_tax * $var_kvCopel->value + $report->public_light + $report->taxa_tusd;
+
+        //Calculando o desconto
+        $report->discount = $report->consume_kv_copel_final - $report->consume_kv_coop_final;
+
+        //Calculando o valor final da cooperativa
+        $report->final_value_coop = $report->consume_kv_coop_final + $report->fasic_value;
+
+        //Calculando o desconto mensal
+        $report->discount_monthly = $report->fatura_copel - $report->final_value_coop;
+
+        //Calculando o desconto percentual
+        $report->discount_percentage = ($report->discount_monthly / $report->fatura_copel) * 100;
 
         return response()->json($report, 201);
     }

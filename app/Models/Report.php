@@ -16,9 +16,21 @@ class Report extends Model
         'client_id',
         'consume_kv_copel',
         'public_light_value',
-        'ult_fatura_copel',
+        'fatura_copel',
         'light_fase_copel',
-        'percentage_value'
+        'percentage_value',
+        'consume_kv_copel_final',
+        'consume_kv_coop',
+        'consume_kv_coop_final',
+        'public_light',
+        'ult_fatura_copel',
+        'min_tax',
+        'fasic_value',
+        'taxa_tusd',
+        'discount',
+        'final_value_coop',
+        'discount_monthly',
+        'discount_percentage'
     ];
 
     public function user(){

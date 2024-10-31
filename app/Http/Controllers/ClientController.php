@@ -41,8 +41,7 @@ class ClientController extends Controller
         $rules = [
             'name' => 'required|min:3',
             'phone' => 'required|min:10|max:11',
-            'fatura_copel' => 'required',
-            'final_value_discount' => 'required',
+            'fatura_copel' => 'required'
         ];
 
         $messages = [
@@ -52,7 +51,6 @@ class ClientController extends Controller
             'phone.min' => 'O campo telefone deve ter no mínimo 10 caracteres',
             'phone.max' => 'O campo telefone deve ter no máximo 11 caracteres',
             'fatura_copel.required' => 'O campo fatura copel é obrigatório',
-            'final_value_discount.required' => 'O campo valor final com desconto é obrigatório',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -77,7 +75,7 @@ class ClientController extends Controller
             ['client_id' => $client->id],
             [
                 'fatura_copel' => $request->fatura_copel,
-                'final_value_discount' => $request->final_value_discount,
+                'final_value_discount' => ($request->fatura_copel * 0.8),
             ]
         );
 

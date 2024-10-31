@@ -17,19 +17,23 @@ class VariablesSeeder extends Seeder
         $variables = [
             [
                 'name' => 'var_monofasica',
-                'value' => 1.0
+                'value' => 30
             ],
             [
                 'name' => 'var_bifasica',
-                'value' => 2.0
+                'value' => 50
             ],
             [
                 'name' => 'var_trifasica',
-                'value' => 3.0
+                'value' => 100
             ],
             [
                 'name' => 'var_kvCopel',
-                'value' => 0.55
+                'value' => 0.82
+            ],
+            [
+                'name' => 'var_taxaTusd',
+                'value' => 0.04
             ]
         ];
 
