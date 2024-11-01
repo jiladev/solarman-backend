@@ -18,10 +18,11 @@ jobs:
       - name: Setup SSH
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
-        run: |
-          echo "$SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H solar@145.223.27.56 >> ~/.ssh/known_hosts
+  run: |
+    mkdir -p ~/.ssh  # Cria o diretório .ssh se não existir
+    echo "$SSH_KEY" > ~/.ssh/id_rsa
+    chmod 600 ~/.ssh/id_rsa
+    ssh-keyscan -H 145.223.27.56 >> ~/.ssh/known_hosts
 
       # 3. Deploy da API para o diretório de `api.cooperativasolarman.com.br`
       - name: Deploy API
