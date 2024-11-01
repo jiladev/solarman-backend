@@ -58,7 +58,7 @@ class ReportController extends Controller
         //Calculando o consumo final da copel  REDEPLOY
         $report->consume_kv_copel_final = $report->consume_kv_copel * $var_kvCopel->value;
 
-        //Calculando o consumo da cooperativa
+        //Calculando o consumo da cooperativa DEPLOY
         $report->consume_kv_coop = $report->consume_kv_copel - $report->min_tax;
 
         //Calculando o consumo final da cooperativa
