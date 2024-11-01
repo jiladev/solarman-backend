@@ -55,7 +55,7 @@ class ReportController extends Controller
 
         $var_kvCopel = Variable::where('name', 'var_kvCopel')->first();
 
-        //Calculando o consumo final da copel
+        //Calculando o consumo final da copel  REDEPLOY
         $report->consume_kv_copel_final = $report->consume_kv_copel * $var_kvCopel->value;
 
         //Calculando o consumo da cooperativa
