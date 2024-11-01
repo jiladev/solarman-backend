@@ -18,18 +18,18 @@ jobs:
       - name: Setup SSH
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
-  run: |
-    mkdir -p ~/.ssh  # Cria o diretório .ssh se não existir
-    echo "$SSH_KEY" > ~/.ssh/id_rsa
-    chmod 600 ~/.ssh/id_rsa
-    ssh-keyscan -H 145.223.27.56 >> ~/.ssh/known_hosts
+        run: |
+          mkdir -p ~/.ssh  # Cria o diretório .ssh se não existir
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 145.223.27.56 >> ~/.ssh/known_hosts
 
       # 3. Deploy da API para o diretório de `api.cooperativasolarman.com.br`
       - name: Deploy API
         run: |
           rsync -avz --exclude '.git' ./api/ solar@145.223.27.56:/htdocs/api.cooperativasolarman.com.br/public
           ssh solar@145.223.27.56 << 'EOF'
-            cd api.cooperativasolarman.com.br/public
+            cd /htdocs/api.cooperativasolarman.com.br/public
             npm install
             pm2 restart api # ou o comando para reiniciar a API
           EOF
