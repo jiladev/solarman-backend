@@ -29,7 +29,7 @@ jobs:
         run: |
           rsync -avz --exclude '.git' ./api/ solar@145.223.27.56:/htdocs/api.cooperativasolarman.com.br/public
           ssh solar@145.223.27.56 << 'EOF'
-            cd /htdocs/api.cooperativasolarman.com.br/public
+            cd /home/solarman/htdocs/api.cooperativasolarman.com.br/public
             npm install
             pm2 restart api
           EOF
