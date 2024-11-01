@@ -61,7 +61,7 @@ class ReportController extends Controller
         //Calculando o consumo da cooperativa DEPLOY
         $report->consume_kv_coop = $report->consume_kv_copel - $report->min_tax;
 
-        //Calculando o consumo final da cooperativa
+        //Calculando o consumo final da cooperativa DEPLOY
         $report->consume_kv_coop_final = $report->consume_kv_coop * $report->percentage_value;
 
         //Calculando a taxa tusd
