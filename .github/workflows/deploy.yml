@@ -27,9 +27,9 @@ jobs:
       # 3. Deploy da API para o diretório de `api.cooperativasolarman.com.br`
       - name: Deploy API
         run: |
-          rsync -avz --exclude '.git' ./api/ solar@145.223.27.56:/htdocs/api.cooperativasolarman.com.br/public
-          ssh solar@145.223.27.56 << 'EOF'
+          rsync -avz --exclude '.git' ./api/ root@145.223.27.56:/htdocs/api.cooperativasolarman.com.br/public
+          ssh root@145.223.27.56 << 'EOF'
             cd /htdocs/api.cooperativasolarman.com.br/public
             npm install
-            pm2 restart api # ou o comando para reiniciar a API
+            pm2 restart api
           EOF
