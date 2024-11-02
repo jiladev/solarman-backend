@@ -20,6 +20,8 @@ class ReportController extends Controller
             'percentage_value' => 'required | numeric | min:0',
         ];
 
+        //Teste Deploy 
+
         $messages = [
             'client_id.required' => 'O campo id do cliente é obrigatório',
             'consume_kv_copel.required' => 'O campo consumo kv copel é obrigatório',
