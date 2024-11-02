@@ -20,7 +20,7 @@ class ReportController extends Controller
             'percentage_value' => 'required | numeric | min:0',
         ];
 
-        //Teste RE-Deploy 
+        //Teste RE-Deploy 2
 
         $messages = [
             'client_id.required' => 'O campo id do cliente é obrigatório',
