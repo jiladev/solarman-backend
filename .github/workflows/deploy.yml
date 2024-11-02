@@ -1,26 +1,19 @@
-name: Deploy to VPS
-
-on:
-  push:
-    branches:
-      - main  # Ou a branch que deseja monitorar para deploy
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v2
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Start SSH agent and add SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Deploy to Server
-      env:
-        HOST: solar@145.223.27.56
-        REMOTE_DIR: /home/solarman/htdocs/api.cooperativasolarman.com.br/public
-      run: |
-        rsync -avz --exclude '.git' ./api/ $HOST:$REMOTE_DIR
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "145.223.27.56 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC3BEdtNj8S7/5gPq8eb30xIwCufns48SuKg4aH7D/bBRRIrIhKZfBApYBRwDMT0+IDRW2kn/JthHN5GCcxcCV9XcNAfh5L5djoywUeBl+LPxqUwlL+LkM7sKESxTUCnpWX6aX6CHdkIPbXoP4goU+w3S+hjtAGxeqMVe0YX8OFFjTCN7SJLgbmTPZh+dRHZ4LqjQKP5EHeGN6jlHT5Le7mo25r5u+AcQCLBcMOPvEOUH95doZFzeD770s9VJW6MiOnMBzAa2JzqW7hfXKt7vw6zT9NB0YsP5eVl0WjOCchlDTrjmZOEF3HHZ7P4gNNEatE2SzBWgGo+HHkRREk6gsxL5NIjkHpzqQKnmigTSNr/sfBSLNXxpBF7O13RsQdbiPTA5mCWQi8fVK3AS4VP4boC32NvzNclSuI2gQO0CNS7V3RmqMqoZHhnJV50qI0f2IFp7gVaPO0gsAKhLJq9mRrHAFCcXpkkfX7/2H1+2jdhE+8cQX7tBm2fNXt0hdPqPU=" >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: rsync -avz --exclude '.git' ./api/ solar@145.223.27.56:/home/solarman/htdocs/api.cooperativasolarman.com.br/public
