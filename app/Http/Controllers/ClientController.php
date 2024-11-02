@@ -14,6 +14,8 @@ class ClientController extends Controller
     public function index()
     {
 
+        //Deploy teste
+
         $name = request()->query('name');
         $limit = request()->query('limit');
         $phone = request()->query('phone');
