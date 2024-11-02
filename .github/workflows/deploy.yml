@@ -1,35 +1,26 @@
-name: Deploy Application
+name: Deploy to VPS
 
 on:
   push:
     branches:
-      - main  # Ou a branch de onde deseja fazer o deploy
+      - main  # Ou a branch que deseja monitorar para deploy
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Fazer checkout do código
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      # 2. Configurar a chave SSH para acesso ao servidor
-      - name: Setup SSH
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to Server
       env:
-        SSH_KEY: ${{ secrets.SSH_KEY }}
+        HOST: solar@145.223.27.56
+        REMOTE_DIR: /home/solarman/htdocs/api.cooperativasolarman.com.br/public
       run: |
-        mkdir -p ~/.ssh
-        echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 145.223.27.56 >> ~/.ssh/known_hosts    
-
-      # 3. Deploy da API para o diretório de `api.cooperativasolarman.com.br`
-      - name: Deploy API
-        run: |
-          rsync -avz --exclude '.git' -e "ssh -o ProxyCommand='ssh -W %h:%p -i ~/.ssh/id_rsa'" ./api/ solar@145.223.27.56:/htdocs/api.cooperativasolarman.com.br/public
-          ssh solar@145.223.27.56 << 'EOF'
-            cd /home/solarman/htdocs/api.cooperativasolarman.com.br/public
-            npm install
-            pm2 restart api
-          EOF
+        rsync -avz --exclude '.git' ./api/ $HOST:$REMOTE_DIR
