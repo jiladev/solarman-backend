@@ -1,3 +1,10 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main  # Ou a branch que deseja monitorar para deploy
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -17,3 +24,4 @@ jobs:
 
       - name: Deploy to server
         run: rsync -avz --exclude '.git' ./api/ solar@145.223.27.56:/home/solarman/htdocs/api.cooperativasolarman.com.br/public
+
