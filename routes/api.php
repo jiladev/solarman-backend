@@ -41,7 +41,7 @@ Route::prefix('/clients')->group(function () {
 
 
 //Rotas protegidas para usuários autenticados
-Route::middleware('auth:sanctum')->group(function () {
+//Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     
     Route::prefix('/users')->group(function () {
@@ -61,5 +61,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/reports', [ReportController::class, 'index']);
     Route::get('/reports/{id}', [ReportController::class, 'show']);
-});
+//});
 
