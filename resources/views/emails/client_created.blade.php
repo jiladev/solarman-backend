@@ -13,7 +13,7 @@
     <div class="container">
         <header class="header">
             <div class="img-header">
-                <img src="{{ asset('img/logo-horiz-solarman-1.svg') }}" alt="Logo Solarman">
+                <img src="{{ asset('img/logo-horiz-solarman-1.png') }}" alt="Logo Solarman">
             </div>
             <h1> Tem <span>cliente novo</span> chegando aí!</h1>
             <hr class="line-orange">
@@ -36,7 +36,7 @@
     </div>
 
     <footer class="footer">
-        <img src="{{ asset('img/logo-horiz-solarman-branca-1.svg') }}" alt="Logo footer">
+        <img src="{{ asset('img/logo-horiz-solarman-branca-1.png') }}" alt="Logo footer">
     </footer>
 
 </body>
