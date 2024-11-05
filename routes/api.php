@@ -34,7 +34,7 @@ Route::prefix('/clients')->group(function () {
     Route::delete('/{id}', [ClientController::class, 'destroy']);
 });
 
-
+//Rota de login
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 //Rotas protegidas para usuários autenticados
