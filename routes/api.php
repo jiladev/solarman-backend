@@ -23,9 +23,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/* Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-    });*/
+});*/
+
+    //Rota de login
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+    Route::post('/clients', [UserController::class, 'store']);
 
 Route::prefix('/clients')->group(function () {
     Route::get('/', [ClientController::class, 'index']);
@@ -34,8 +39,6 @@ Route::prefix('/clients')->group(function () {
     Route::delete('/{id}', [ClientController::class, 'destroy']);
 });
 
-//Rota de login
-Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 //Rotas protegidas para usuários autenticados
 Route::middleware('auth:sanctum')->group(function () {
@@ -44,7 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/{id}', [UserController::class, 'show']);
-        Route::post('/', [UserController::class, 'store']);
         Route::put('/{id}', [UserController::class, 'update']);
     });
 
