@@ -23,16 +23,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/* Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-});
-
-Route::prefix('/users')->group(function () {
-    Route::get('/', [UserController::class, 'index']);
-    Route::get('/{id}', [UserController::class, 'show']);
-    Route::post('/', [UserController::class, 'store']);
-    Route::put('/{id}', [UserController::class, 'update']);
-});
+    });*/
 
 Route::prefix('/clients')->group(function () {
     Route::get('/', [ClientController::class, 'index']);
@@ -41,21 +34,30 @@ Route::prefix('/clients')->group(function () {
     Route::delete('/{id}', [ClientController::class, 'destroy']);
 });
 
+
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 //Rotas protegidas para usuários autenticados
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    
+    Route::prefix('/users')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::get('/{id}', [UserController::class, 'show']);
+        Route::post('/', [UserController::class, 'store']);
+        Route::put('/{id}', [UserController::class, 'update']);
+    });
 
     Route::prefix('/reports')->group(function () {
         Route::post('/', [ReportController::class, 'handleReport']);
     });
+
+    Route::prefix('/variables')->group(function () {
+        Route::get('/', [VariableController::class, 'index']);
+        Route::put('/{id}', [VariableController::class, 'update']);
+    });
+
+    Route::get('/reports', [ReportController::class, 'index']);
+    Route::get('/reports/{id}', [ReportController::class, 'show']);
 });
 
-Route::prefix('/variables')->group(function () {
-    Route::get('/', [VariableController::class, 'index']);
-    Route::put('/{id}', [VariableController::class, 'update']);
-});
-
-Route::get('/reports', [ReportController::class, 'index']);
-Route::get('/reports/{id}', [ReportController::class, 'show']);

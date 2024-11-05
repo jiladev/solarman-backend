@@ -20,8 +20,6 @@ class ReportController extends Controller
             'percentage_value' => 'required | numeric | min:0',
         ];
 
-        //Teste RE-Deploy 2
-
         $messages = [
             'client_id.required' => 'O campo id do cliente é obrigatório',
             'consume_kv_copel.required' => 'O campo consumo kv copel é obrigatório',
@@ -51,19 +49,37 @@ class ReportController extends Controller
 
         $report = new Report();
 
+        $client = Client::where('phone', $request->phone_client)->first();
+        if (!$client) {
+            $client = Client::create([
+                'name' => $request->phone_client,
+                'phone' => $request->phone_client,
+            ]);
+        }
+
+        $clientEstimate = ClientEstimate::updateOrCreate(
+            ['client_id' => $client->id],
+            [
+                'fatura_copel' => $request->fatura_copel,
+                'final_value_discount' => ($request->fatura_copel * 0.8),
+            ]
+        );
+
+        $report->client_id = $client->id;
+
         $report->fill($request->all());
 
         info('Report created', $report->toArray());
 
         $var_kvCopel = Variable::where('name', 'var_kvCopel')->first();
 
-        //Calculando o consumo final da copel  REDEPLOY
+        //Calculando o consumo final da copel
         $report->consume_kv_copel_final = $report->consume_kv_copel * $var_kvCopel->value;
 
-        //Calculando o consumo da cooperativa DEPLOY
+        //Calculando o consumo da cooperativa
         $report->consume_kv_coop = $report->consume_kv_copel - $report->min_tax;
 
-        //Calculando o consumo final da cooperativa DEPLOY
+        //Calculando o consumo final da cooperativa
         $report->consume_kv_coop_final = $report->consume_kv_coop * $report->percentage_value;
 
         //Calculando a taxa tusd
