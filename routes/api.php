@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Route;
     //Rota de login
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-    Route::post('/clients', [UserController::class, 'store']);
+    Route::post('/users', [UserController::class, 'store']);
 
 Route::prefix('/clients')->group(function () {
     Route::get('/', [ClientController::class, 'index']);
