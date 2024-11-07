@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use App\Models\ClientEstimate;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -130,5 +132,12 @@ class ReportController extends Controller
         $report = Report::findOrFail($id)->load(['client']);
 
         return response()->json($report, 200);
+    }
+
+    public function generatePdf(){
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView("pdf.report");
+
+        return $pdf->download('relatorio.pdf');
     }
 }
