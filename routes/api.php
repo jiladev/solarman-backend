@@ -28,10 +28,10 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-    //Rota de login
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+//Rota de login
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-    Route::post('/users', [UserController::class, 'store']);
+Route::post('/users', [UserController::class, 'store']);
 
 Route::prefix('/clients')->group(function () {
     Route::get('/', [ClientController::class, 'index']);
@@ -44,7 +44,7 @@ Route::prefix('/clients')->group(function () {
 //Rotas protegidas para usuários autenticados
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    
+
     Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/{id}', [UserController::class, 'show']);
@@ -66,4 +66,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //Download PDF
 Route::get('/gerar-pdf', [ReportController::class, 'generatePdf']);
+
+//Preview PDF
+Route::get('/preview-pdf', function () {
+    return view('pdf.report');
+});
+
 

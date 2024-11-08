@@ -138,6 +138,6 @@ class ReportController extends Controller
         $pdf = app('dompdf.wrapper');
         $pdf->loadView("pdf.report");
 
-        return $pdf->download('relatorio.pdf');
+        return $pdf->stream('relatorio.pdf');
     }
 }
