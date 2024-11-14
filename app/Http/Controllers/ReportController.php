@@ -105,17 +105,14 @@ class ReportController extends Controller
 
         $report->save();
 
-        $outputFilePath = 'report.pdf';
+        $outputFilePath = '/tmp/report.pdf';
 
         if (file_exists($outputFilePath)) {
             unlink($outputFilePath);
         }
 
         $snappy = new Pdf('/usr/bin/wkhtmltopdf');
-        $snappy->setOption('enable-local-file-access', true);
-        $snappy->setOption('no-images', false); // Desabilitar a opção que pode bloquear imagens
-        $snappy->setOption('disable-javascript', false);
-        
+        $snappy->setOption('enable-local-file-access', true);    
 
         //Formatando valores
         $currentValue = $this->formatCurrency($report->fatura_copel);
