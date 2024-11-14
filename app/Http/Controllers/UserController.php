@@ -58,7 +58,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
 
-        //teste deploy
+        //teste deploy 2
         $rules = [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
