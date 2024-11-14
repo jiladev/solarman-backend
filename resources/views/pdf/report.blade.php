@@ -73,8 +73,8 @@
 
         .sol-1 {
             position: relative;
-            top: -97px;
-            width: 50%;
+            top: -70px;
+            left: -50px;
         }
 
         .price-box {
@@ -93,10 +93,10 @@
 
         .price-box div p {
             width: 50%;
+            margin-right: 24px;
         }
 
         .price-box h3 {
-            width: 124px;
             padding: 4px 19px;
             border-radius: 24px;
             background-color: orange;
@@ -116,9 +116,10 @@
         }
 
         .tripe-1 {
-            width: 32%;
+            position: relative;
             margin-left: auto;
             margin-bottom: auto;
+            left: -35px;
         }
 
         .table-container {
@@ -133,9 +134,10 @@
 
         table th,
         table td {
-            border: 1px solid #ddd;
+            border: none;
             padding: 8px;
             text-align: center;
+            font-weight: 700;
         }
 
         table th {
@@ -158,9 +160,23 @@
             font-weight: 700;
         }
 
-        .ger-compartilhada-img{
-            width: 100%;
-            margin-top: 20px;
+        .icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ger-compartilhada-img {
+            position: relative;
+            margin: 50px 0;
+            left: -100px;
+        }
+
+        .discount-value {
+            background-color: #FF8A12;
+            color: #fff;
+            border-radius: 8px;
+            padding: 4px 19px;
         }
     </style>
 </head>
@@ -168,12 +184,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('img/logo-horiz-solarman-1.png') }}" alt="Solarman Logo">
+            <img src="{{ public_path('img/logo-horiz-solarman-1.png') }}" alt="Solarman Logo">
             <h1>Estudo de <span class="highlight">Economia</span></h1>
             <hr class="line-orange">
         </div>
         <div class="content">
-            <p>Prezado(a), <span class="highlight">Nome do Cliente</span></p>
+            <p>Prezado(a), <span class="highlight">{{$clientName}}</span></p>
             <p>
                 É com grande satisfação que apresentamos a nossa proposta para o fornecimento <br>de energia solar
                 através de
@@ -186,19 +202,19 @@
             <div class="price-box">
                 <div>
                     <p>Hoje você paga</p>
-                    <h3>R$200,00</h3>
+                    <h3 style="background-color: #0074A8">R${{$currentValue}}</h3>
                 </div>
                 <div>
                     <p>Com a SolarMan você paga</p>
-                    <h3>R$180,00</h3>
+                    <h3>R${{$valueCoop}}</h3>
                 </div>
                 <div>
                     <p>Sua economia mensal</p>
-                    <h3>R$20,00</h3>
+                    <h3 style="background-color: #0074A8">R${{$econMensal}}</h3>
                 </div>
                 <div>
                     <p>Sua economia anual</p>
-                    <h3>R$220,00</h3>
+                    <h3>R${{$econAnual}}</h3>
                 </div>
             </div>
             <div class="tripe-box">
@@ -207,10 +223,10 @@
                     tripé
                     <span class="highlight">Energia Limpa</span>, Consumo Consciente e Interface Moderna.
                 </p>
-                <img class="tripe-1" src="{{asset('img/tripe-1.svg')}}" alt="">
+                <img class="tripe-1" src="{{public_path('img/tripe-1.svg')}}" alt="">
             </div>
         </div>
-        <img class="sol-1" src="{{asset('img/sol-1.svg')}}" alt="">
+        <img class="sol-1" src="{{public_path('img/sol-1.svg')}}" alt="">
         <div class="table-container">
             <table>
                 <thead>
@@ -223,36 +239,36 @@
 
                 <tbody>
                     <tr>
-                        <td style="color: green;">Verde</td>
+                        <td style="color: #008600;">Verde</td>
                         <td>30,84</td>
-                        <td>13,55</td>
+                        <td><span class="discount-value">13,55</span></td>
                     </tr>
                     <tr>
-                        <td style="color: orange;">Amarela</td>
+                        <td style="color: #FF8A12;">Amarela</td>
                         <td>30,84</td>
-                        <td>13,55</td>
+                        <td><span class="discount-value">13,55</span></td>
                     </tr>
                     <tr>
-                        <td style="color: red;">Vermelha P1</td>
+                        <td style="color: #FF0000;">Vermelha P1</td>
                         <td>30,84</td>
-                        <td>13,55</td>
+                        <td><span class="discount-value">13,55</span></td>
                     </tr>
                     <tr>
-                        <td style="color: darkred;">Vermelha P2</td>
+                        <td style="color: #FF0000;">Vermelha P2</td>
                         <td>30,84</td>
-                        <td>13,55</td>
+                        <td><span class="discount-value">13,55</span></td>
                     </tr>
                     <tr>
-                        <td style="color: blue;">Es. Hídrica</td>
+                        <td style="color: #333333;">Es. Hídrica</td>
                         <td>30,84</td>
-                        <td>13,55</td>
+                        <td><span class="discount-value">13,55</span></td>
                     </tr>
                 </tbody>
             </table>
             <p class="tableFooter">Nosso valor não aumenta com a bandeira tarifária.</p>
         </div>
         <div class="icons">
-            <img class="ger-compartilhada-img" src="{{asset('img/modelo-1.svg')}}" alt="">
+            <img class="ger-compartilhada-img" src="{{public_path('img/modelo-1.svg')}}" alt="">
         </div>
     </div>
 </body>

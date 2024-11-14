@@ -22,7 +22,7 @@ class CreateReportsTable extends Migration
             $table->float('consume_kv_copel_final');
             $table->float('consume_kv_coop_final');
             $table->float('public_light');
-            $table->float('ult_fatura_copel');
+            $table->float('fatura_copel');
             $table->float('min_tax');
             $table->float('fasic_value');
             $table->float('percentage_value');

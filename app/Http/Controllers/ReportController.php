@@ -8,13 +8,14 @@ use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Variable;
+use Knp\Snappy\Pdf;
+use Spatie\Browsershot\Browsershot;
 
 class ReportController extends Controller
 {
     public function handleReport(Request $request)
     {
         $rules = [
-            'client_id' => 'required | exists:clients,id',
             'consume_kv_copel' => 'required | numeric | min:0',
             'public_light' => 'required | numeric | min:0',
             'fatura_copel' => 'required | numeric | min:0',
@@ -23,7 +24,6 @@ class ReportController extends Controller
         ];
 
         $messages = [
-            'client_id.required' => 'O campo id do cliente é obrigatório',
             'consume_kv_copel.required' => 'O campo consumo kv copel é obrigatório',
             'consume_kv_copel.numeric' => 'O campo consumo kv copel deve ser um número',
             'consume_kv_copel.min' => 'O campo consumo kv copel deve ser no mínimo 0',
@@ -43,7 +43,7 @@ class ReportController extends Controller
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
@@ -103,10 +103,40 @@ class ReportController extends Controller
         //Calculando o desconto percentual
         $report->discount_percentage = ($report->discount_monthly / $report->fatura_copel) * 100;
 
+        $report->save();
+
+        $outputFilePath = 'report.pdf';
+
+        if (file_exists($outputFilePath)) {
+            unlink($outputFilePath);
+        }
+
+        $snappy = new Pdf('/usr/bin/wkhtmltopdf');
+        $snappy->setOption('enable-local-file-access', true);
+
+        //Formatando valores
+        $currentValue = $this->formatCurrency($report->fatura_copel);
+        $valueCoop = $this->formatCurrency($report->final_value_coop);
+        $econMensal = $this->formatCurrency($report->discount_monthly);
+        $econAnual = $this->formatCurrency($report->discount_monthly * 12);
+
+        $clientName = $client->name;
+
+        $html = view('pdf.report', compact('report', 'currentValue', 'valueCoop', 'econMensal', 'econAnual', 'clientName'));
+
+        $snappy->generateFromHtml($html, $outputFilePath);
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="report.pdf"');
+        header('Content-Transfer-Encoding: binary');
+        header('Accept-Ranges: bytes');
+        readfile($outputFilePath);
+
         return response()->json($report, 201);
     }
 
-    public function index(){
+    public function index()
+    {
         $client_id = request()->query('client_id');
         $user_id = request()->query('user_id');
         $limit = request()->query('limit');
@@ -115,11 +145,11 @@ class ReportController extends Controller
 
         $query->limit($limit ? $limit : 10);
 
-        if($client_id){
+        if ($client_id) {
             $query->where('client_id', $client_id);
         }
 
-        if($user_id){
+        if ($user_id) {
             $query->where('user_id', $user_id);
         }
 
@@ -128,16 +158,37 @@ class ReportController extends Controller
         return response()->json($reports, 200);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $report = Report::findOrFail($id)->load(['client']);
 
         return response()->json($report, 200);
     }
 
-    public function generatePdf(){
-        $pdf = app('dompdf.wrapper');
-        $pdf->loadView("pdf.report");
+    public function generatePdf()
+    {
+        $outputFilePath = 'report.pdf';
 
-        return $pdf->stream('relatorio.pdf');
+        if (file_exists($outputFilePath)) {
+            unlink($outputFilePath);
+        }
+
+        $snappy = new Pdf('/usr/bin/wkhtmltopdf');
+        $snappy->setOption('enable-local-file-access', true);
+
+        $html = view('pdf.report');
+
+        $snappy->generateFromHtml($html, $outputFilePath);
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="report.pdf"');
+        header('Content-Transfer-Encoding: binary');
+        header('Accept-Ranges: bytes');
+        readfile($outputFilePath);
+    }
+
+    private function formatCurrency($value)
+    {
+        return number_format($value, 2, ',', '.');
     }
 }
