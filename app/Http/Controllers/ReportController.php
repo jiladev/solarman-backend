@@ -105,7 +105,7 @@ class ReportController extends Controller
 
         $report->save();
 
-        $outputFilePath = '/tmp/report.pdf';
+        $outputFilePath = 'report.pdf';
 
         if (file_exists($outputFilePath)) {
             unlink($outputFilePath);
