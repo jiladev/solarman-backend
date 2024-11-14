@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::post('/users', [UserController::class, 'store']);
+Route::get('/users', [UserController::class, 'index']);
 
 Route::prefix('/clients')->group(function () {
     Route::get('/', [ClientController::class, 'index']);
@@ -46,7 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::prefix('/users')->group(function () {
-        Route::get('/', [UserController::class, 'index']);
         Route::get('/{id}', [UserController::class, 'show']);
         Route::put('/{id}', [UserController::class, 'update']);
     });
