@@ -14,8 +14,6 @@ class ClientController extends Controller
     public function index()
     {
 
-        //Deploy teste teste
-
         $name = request()->query('name');
         $limit = request()->query('limit');
         $phone = request()->query('phone');
@@ -36,8 +34,6 @@ class ClientController extends Controller
         return response()->json($clients, 200);
     }
 
-    //Se o cliente não existe, ele é criado e cria uma estimativa para o cliente
-    //Se o cliente já existe, ele atualiza o nome do cliente e atualiza a estimativa para o cliente
     public function handleClientEstimate(Request $request)
     {
         $rules = [
@@ -100,5 +96,12 @@ class ClientController extends Controller
         $client->delete();
 
         return response()->json([], 200);
+    }
+
+    public function clientsEstimates()
+    {
+        $clients = Client::with('estimates')->with('reports')->get();
+
+        return response()->json($clients, 200);
     }
 }

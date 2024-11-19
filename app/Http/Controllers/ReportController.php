@@ -124,7 +124,6 @@ class ReportController extends Controller
 
         $html = view('pdf.report', compact('report', 'currentValue', 'valueCoop', 'econMensal', 'econAnual', 'clientName'));
 
-        //Teste deploy
         $snappy->generateFromHtml($html, $outputFilePath);
 
         header('Content-Type: application/pdf');

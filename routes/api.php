@@ -34,6 +34,8 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/users', [UserController::class, 'store']);
 Route::get('/users', [UserController::class, 'index']);
 
+Route::get('/clients-estimates', [ClientController::class, 'clientsEstimates']);
+
 Route::prefix('/clients')->group(function () {
     Route::get('/', [ClientController::class, 'index']);
     Route::post('/handle-client-estimate', [ClientController::class, 'handleClientEstimate']);
