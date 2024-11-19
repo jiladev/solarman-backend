@@ -112,7 +112,7 @@ class ReportController extends Controller
         }
 
         $snappy = new Pdf('/usr/bin/wkhtmltopdf');
-        $snappy->setOption('enable-local-file-access', true);    
+        $snappy->setOption('enable-local-file-access', true);
 
         //Formatando valores
         $currentValue = $this->formatCurrency($report->fatura_copel);
@@ -120,9 +120,17 @@ class ReportController extends Controller
         $econMensal = $this->formatCurrency($report->discount_monthly);
         $econAnual = $this->formatCurrency($report->discount_monthly * 12);
 
+        $verdeDesconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1355604396));
+        $amarelaDesconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1455604396));
+        $vermelhaDesconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1555604396));
+        $vermelhaP1Desconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1555604396));
+        $vermelhaP2Desconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1555604396));
+        $escassezDesconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1655604396));
+
+
         $clientName = $client->name;
 
-        $html = view('pdf.report', compact('report', 'currentValue', 'valueCoop', 'econMensal', 'econAnual', 'clientName'));
+        $html = view('pdf.report', compact('report', 'currentValue', 'valueCoop', 'econMensal', 'econAnual', 'clientName', 'verdeDesconto', 'amarelaDesconto', 'vermelhaDesconto', 'vermelhaP1Desconto', 'vermelhaP2Desconto', 'escassezDesconto'));
 
         $snappy->generateFromHtml($html, $outputFilePath);
 

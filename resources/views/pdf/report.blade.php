@@ -240,28 +240,28 @@
                 <tbody>
                     <tr>
                         <td style="color: #008600;">Verde</td>
-                        <td>30,84</td>
-                        <td><span class="discount-value">13,55</span></td>
+                        <td>R${{$verdeDesconto}}</td>
+                        <td><span class="discount-value">13,55604396</span></td>
                     </tr>
                     <tr>
                         <td style="color: #FF8A12;">Amarela</td>
-                        <td>30,84</td>
-                        <td><span class="discount-value">13,55</span></td>
+                        <td>R${{$amarelaDesconto}}</td>
+                        <td><span class="discount-value">14,55604396</span></td>
                     </tr>
                     <tr>
                         <td style="color: #FF0000;">Vermelha P1</td>
-                        <td>30,84</td>
-                        <td><span class="discount-value">13,55</span></td>
+                        <td>R${{$vermelhaP1Desconto}}</td>
+                        <td><span class="discount-value">15,55604396</span></td>
                     </tr>
                     <tr>
                         <td style="color: #FF0000;">Vermelha P2</td>
-                        <td>30,84</td>
-                        <td><span class="discount-value">13,55</span></td>
+                        <td>R${{$vermelhaP2Desconto}}</td>
+                        <td><span class="discount-value">15,55604396</span></td>
                     </tr>
                     <tr>
                         <td style="color: #333333;">Es. Hídrica</td>
-                        <td>30,84</td>
-                        <td><span class="discount-value">13,55</span></td>
+                        <td>R${{$escassezDesconto}}</td>
+                        <td><span class="discount-value">16,55604396</span></td>
                     </tr>
                 </tbody>
             </table>
