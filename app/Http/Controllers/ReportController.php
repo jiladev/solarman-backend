@@ -134,10 +134,10 @@ class ReportController extends Controller
 
         $snappy->generateFromHtml($html, $outputFilePath);
 
-        // header('Content-Type: application/pdf');
-        // header('Content-Disposition: inline; filename="report.pdf"');
-        // header('Content-Transfer-Encoding: binary');
-        //header('Accept-Ranges: bytes');
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="report.pdf"');
+        header('Content-Transfer-Encoding: binary');
+        header('Accept-Ranges: bytes');
         readfile($outputFilePath);
 
         return response()->json($report, 201);
