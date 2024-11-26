@@ -54,7 +54,7 @@ class ReportController extends Controller
         $client = Client::where('phone', $request->phone_client)->first();
         if (!$client) {
             $client = Client::create([
-                'name' => $request->phone_client,
+                'name' => $request->name_client,
                 'phone' => $request->phone_client,
             ]);
         }
@@ -116,17 +116,16 @@ class ReportController extends Controller
 
         //Formatando valores
         $currentValue = $this->formatCurrency($report->fatura_copel);
-        $valueCoop = $this->formatCurrency($report->final_value_coop);
-        $econMensal = $this->formatCurrency($report->discount_monthly);
-        $econAnual = $this->formatCurrency($report->discount_monthly * 12);
+        $valueCoop = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1355604396));
+        $econMensal = $this->formatCurrency($report->fatura_copel * 0.1355604396);
+        $econAnual = $this->formatCurrency(($report->fatura_copel * 0.1355604396) * 12);
 
-        $verdeDesconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1355604396));
-        $amarelaDesconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1455604396));
-        $vermelhaDesconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1555604396));
-        $vermelhaP1Desconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1555604396));
-        $vermelhaP2Desconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1555604396));
-        $escassezDesconto = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1655604396));
-
+        $verdeDesconto = $this->formatCurrency($report->fatura_copel * 0.1355604396);
+        $amarelaDesconto = $this->formatCurrency($report->fatura_copel * 0.1455604396);
+        $vermelhaDesconto = $this->formatCurrency($report->fatura_copel * 0.1555604396);
+        $vermelhaP1Desconto = $this->formatCurrency($report->fatura_copel * 0.1555604396);
+        $vermelhaP2Desconto = $this->formatCurrency($report->fatura_copel * 0.1555604396);
+        $escassezDesconto = $this->formatCurrency($report->fatura_copel * 0.1655604396);
 
         $clientName = $client->name;
 
