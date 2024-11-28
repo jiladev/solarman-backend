@@ -150,7 +150,11 @@ class ReportController extends Controller
             return response()->json(['message' => 'Erro ao gerar o relatório'], 500);
         }
 
-        return response()->download($outputFilePath, 'report.pdf')->deleteFileAfterSend(true);
+        return response()->download($outputFilePath, 'report.pdf', [
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+        ])->deleteFileAfterSend(true);
     }
 
     public function index()
