@@ -151,6 +151,7 @@ class ReportController extends Controller
         }
 
         return response()->download($outputFilePath, 'report.pdf', [
+            'Content-Type' => 'application/pdf',
             'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS',
             'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
