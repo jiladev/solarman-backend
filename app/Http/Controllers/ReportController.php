@@ -105,14 +105,12 @@ class ReportController extends Controller
 
         $report->save();
 
-        $outputFilePath = '/tmp/report.pdf';
+        $outputFilePath = storage_path('app/reports/report.pdf');
 
         if (file_exists($outputFilePath)) {
             unlink($outputFilePath);
         }
 
-        $snappy = new Pdf('/usr/bin/wkhtmltopdf');
-        $snappy->setOption('enable-local-file-access', true);
 
         //Formatando valores
         $currentValue = $this->formatCurrency($report->fatura_copel);
@@ -129,17 +127,30 @@ class ReportController extends Controller
 
         $clientName = $client->name;
 
-        $html = view('pdf.report', compact('report', 'currentValue', 'valueCoop', 'econMensal', 'econAnual', 'clientName', 'verdeDesconto', 'amarelaDesconto', 'vermelhaDesconto', 'vermelhaP1Desconto', 'vermelhaP2Desconto', 'escassezDesconto'));
+        $html = view('pdf.report', compact(
+            'report',
+            'currentValue',
+            'valueCoop',
+            'econMensal',
+            'econAnual',
+            'clientName',
+            'verdeDesconto',
+            'amarelaDesconto',
+            'vermelhaDesconto',
+            'vermelhaP1Desconto',
+            'vermelhaP2Desconto',
+            'escassezDesconto'
+        ))->render();
 
+        $snappy = new Pdf('/usr/bin/wkhtmltopdf');
+        $snappy->setOption('enable-local-file-access', true);
         $snappy->generateFromHtml($html, $outputFilePath);
 
-        header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="report.pdf"');
-        header('Content-Transfer-Encoding: binary');
-        header('Accept-Ranges: bytes');
-        readfile($outputFilePath);
+        if (!file_exists($outputFilePath)) {
+            return response()->json(['message' => 'Erro ao gerar o relatório'], 500);
+        }
 
-        return response()->json($report, 201);
+        return response()->download($outputFilePath, 'report.pdf')->deleteFileAfterSend(true);
     }
 
     public function index()
