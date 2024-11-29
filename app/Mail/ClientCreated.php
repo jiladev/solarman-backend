@@ -29,7 +29,8 @@ class ClientCreated extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.client_created')
+        return $this->from(config("mail.from.address"), config("mail.from.name"))
+            ->view('emails.client_created')
             ->subject('Um cliente acabou de fazer um orçamento')
             ->with([
                 'client' => $this->client,
