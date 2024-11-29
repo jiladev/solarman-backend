@@ -79,7 +79,7 @@ class ClientController extends Controller
 
         SendClientCreatedEmail::dispatch($client, $clientEstimate);
 
-        return response()->json([$client, $clientEstimate], 200);
+        return response()->json(["client" => $client, "estimate" => $clientEstimate], 200);
     }
 
     public function show($id)
