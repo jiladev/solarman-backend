@@ -16,10 +16,12 @@ class ClientController extends Controller
 
         $name = request()->query('name');
         $limit = request()->query('limit');
+        $page = request()->query('page');
         $phone = request()->query('phone');
 
         $query = Client::query();
         $query->limit($limit ? $limit : 10);
+        $query->offset(($page - 1) * $limit);
 
         if ($name) {
             $query->where('name', 'like', "%$name%");

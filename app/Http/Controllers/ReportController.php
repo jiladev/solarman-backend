@@ -187,30 +187,72 @@ class ReportController extends Controller
         return response()->json($report, 200);
     }
 
-    public function generatePdf()
+    private function formatCurrency($value)
     {
-        $outputFilePath = 'report.pdf';
+        return number_format($value, 2, ',', '.');
+    }
+
+    public function destroy($id)
+    {
+        $report = Report::findOrFail($id);
+
+        $report->delete();
+
+        return response()->json([], 200);
+    }
+
+    public function generatePdf($id)
+    {
+        $report = Report::findOrFail($id);
+        $client = Client::findOrFail($report->client_id);
+
+        $currentValue = $this->formatCurrency($report->fatura_copel);
+        $valueCoop = $this->formatCurrency($report->fatura_copel - ($report->fatura_copel * 0.1355604396));
+        $econMensal = $this->formatCurrency($report->fatura_copel * 0.1355604396);
+        $econAnual = $this->formatCurrency(($report->fatura_copel * 0.1355604396) * 12);
+
+        $verdeDesconto = $this->formatCurrency($report->fatura_copel * 0.1355604396);
+        $amarelaDesconto = $this->formatCurrency($report->fatura_copel * 0.1455604396);
+        $vermelhaDesconto = $this->formatCurrency($report->fatura_copel * 0.1555604396);
+        $vermelhaP1Desconto = $this->formatCurrency($report->fatura_copel * 0.1555604396);
+        $vermelhaP2Desconto = $this->formatCurrency($report->fatura_copel * 0.1555604396);
+        $escassezDesconto = $this->formatCurrency($report->fatura_copel * 0.1655604396);
+
+        $clientName = $client->name;
+
+        $outputFilePath = storage_path('app/reports/report.pdf');
 
         if (file_exists($outputFilePath)) {
             unlink($outputFilePath);
         }
 
+        $html = view('pdf.report', compact(
+            'report',
+            'currentValue',
+            'valueCoop',
+            'econMensal',
+            'econAnual',
+            'clientName',
+            'verdeDesconto',
+            'amarelaDesconto',
+            'vermelhaDesconto',
+            'vermelhaP1Desconto',
+            'vermelhaP2Desconto',
+            'escassezDesconto'
+        ))->render();
+
         $snappy = new Pdf('/usr/bin/wkhtmltopdf');
         $snappy->setOption('enable-local-file-access', true);
-
-        $html = view('pdf.report');
-
         $snappy->generateFromHtml($html, $outputFilePath);
 
-        header('Content-Type: application/pdf');
-        header('Content-Disposition: inline; filename="report.pdf"');
-        header('Content-Transfer-Encoding: binary');
-        header('Accept-Ranges: bytes');
-        readfile($outputFilePath);
-    }
+        if (!file_exists($outputFilePath)) {
+            return response()->json(['message' => 'Erro ao gerar o relatório'], 500);
+        }
 
-    private function formatCurrency($value)
-    {
-        return number_format($value, 2, ',', '.');
+        return response()->download($outputFilePath, 'report.pdf', [
+            'Content-Type' => 'application/pdf',
+            'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+        ])->deleteFileAfterSend(true);
     }
 }

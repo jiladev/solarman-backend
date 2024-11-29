@@ -31,8 +31,6 @@ use Illuminate\Support\Facades\Route;
 //Rota de login
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-Route::post('/users', [UserController::class, 'store']);
-Route::get('/users', [UserController::class, 'index']);
 
 Route::get('/clients-estimates', [ClientController::class, 'clientsEstimates']);
 
@@ -47,8 +45,10 @@ Route::prefix('/clients')->group(function () {
 //Rotas protegidas para usuários autenticados
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-
+    
     Route::prefix('/users')->group(function () {
+        Route::post('/', [UserController::class, 'store']);
+        Route::get('/', [UserController::class, 'index']);
         Route::get('/{id}', [UserController::class, 'show']);
         Route::put('/{id}', [UserController::class, 'update']);
     });
@@ -62,16 +62,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [VariableController::class, 'update']);
     });
 
-    Route::get('/reports', [ReportController::class, 'index']);
-    Route::get('/reports/{id}', [ReportController::class, 'show']);
+    Route::prefix('/reports')->group(function () {
+        Route::get('/', [ReportController::class, 'index']);
+        Route::get('/{id}', [ReportController::class, 'show']);
+        Route::delete('/{id}', [ReportController::class, 'destroy']);
+        Route::get('/generatePdf/{id}', [ReportController::class, 'generatePdf']);
+    });
 });
-
-//Download PDF
-Route::get('/gerar-pdf', [ReportController::class, 'generatePdf']);
 
 //Preview PDF
-Route::get('/preview-pdf', function () {
-    return view('pdf.report');
-});
+// Route::get('/preview-pdf', function () {
+//     return view('pdf.report');
+// });
 
 
