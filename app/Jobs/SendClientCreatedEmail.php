@@ -35,7 +35,7 @@ class SendClientCreatedEmail implements ShouldQueue
         $this->clientEstimate->final_value_discount = $this->formatCurrency($this->clientEstimate->final_value_discount);
         $this->clientEstimate->fatura_copel = $this->formatCurrency($this->clientEstimate->fatura_copel);
 
-        Mail::to("luanfelipe12.antunes@gmail.com")->send(new ClientCreated($this->client, $this->clientEstimate));
+        Mail::to("cooperativasolarman@gmail.com")->send(new ClientCreated($this->client, $this->clientEstimate));
     }
 
     private function formatPhoneNumber($phone)
