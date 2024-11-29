@@ -73,7 +73,7 @@ class ClientController extends Controller
             ['client_id' => $client->id],
             [
                 'fatura_copel' => $request->fatura_copel,
-                'final_value_discount' => ($request->fatura_copel * 0.8),
+                'final_value_discount' => ($request->fatura_copel - $request->fatura_copel * 0.1355604396),
             ]
         );
 
