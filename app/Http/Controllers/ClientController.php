@@ -16,7 +16,7 @@ class ClientController extends Controller
 
         $name = request()->query('name');
         $limit = request()->query('limit');
-        $page = request()->query('page');
+        $page = request()->query('page') ? request()->query('page') : 1;
         $phone = request()->query('phone');
 
         $query = Client::query();
