@@ -13,15 +13,11 @@ class ClientController extends Controller
 {
     public function index()
     {
-
         $name = request()->query('name');
-        $limit = request()->query('limit');
-        $page = request()->query('page') ? request()->query('page') : 1;
         $phone = request()->query('phone');
+        $limit = request()->query('limit', 10);
 
         $query = Client::query();
-        $query->limit($limit ? $limit : 10);
-        $query->offset(($page - 1) * $limit);
 
         if ($name) {
             $query->where('name', 'like', "%$name%");
@@ -31,10 +27,11 @@ class ClientController extends Controller
             $query->where('phone', 'like', "%$phone%");
         }
 
-        $clients = $query->get();
+        $clients = $query->paginate($limit);
 
         return response()->json($clients, 200);
     }
+
 
     public function handleClientEstimate(Request $request)
     {
