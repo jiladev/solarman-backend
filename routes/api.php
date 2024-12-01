@@ -28,13 +28,6 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-Route::options('/{any}', function () {
-    return response('', 200)
-        ->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods', '*')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-})->where('any', '.*');
-
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 
