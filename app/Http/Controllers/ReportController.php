@@ -63,7 +63,7 @@ class ReportController extends Controller
             ['client_id' => $client->id],
             [
                 'fatura_copel' => $request->fatura_copel,
-                'final_value_discount' => ($request->fatura_copel * 0.8),
+                'final_value_discount' => ($request->fatura_copel * (1 - $request->min_tax)),
             ]
         );
 
@@ -161,11 +161,15 @@ class ReportController extends Controller
     {
         $client_id = request()->query('client_id');
         $user_id = request()->query('user_id');
-        $limit = request()->query('limit');
+        $name = request()->query('name');
+        $phone = request()->query('phone');
+        $limit = (int) request()->query('limit');
+
+        $perPage = $limit ? $limit : 5;
 
         $query = Report::query();
 
-        $query->limit($limit ? $limit : 10);
+        $query->join('clients', 'clients.id', '=', 'reports.client_id');
 
         if ($client_id) {
             $query->where('client_id', $client_id);
@@ -175,9 +179,52 @@ class ReportController extends Controller
             $query->where('user_id', $user_id);
         }
 
-        $reports = $query->get();
+        if ($name) {
+            $query->where('clients.name', 'like', '%' . $name . '%');
+        }
 
-        return response()->json($reports, 200);
+        if ($phone) {
+            $query->where('clients.phone', 'like', '%' . $phone . '%');
+        }
+
+        $query->orderBy('reports.created_at', 'desc');
+
+        $query->select(
+            'reports.id',
+            'reports.client_id',
+            'clients.name as client_name',
+            'clients.phone as client_phone',
+            'reports.created_at',
+            'reports.fatura_copel',
+        );
+
+        $reports = $query->paginate($perPage);
+
+        $formattedResponse = $reports->getCollection()->map(function ($report) {
+            $discountedValue = $report->fatura_copel - ($report->fatura_copel * 0.1355604396);
+
+            return [
+                'id' => $report->id,
+                'client' => [
+                    'id' => $report->client_id,
+                    'name' => $report->client_name,
+                    'phone' => $report->client_phone,
+                ],
+                'datetime' => $report->created_at,
+                'originalValue' => $report->fatura_copel,
+                'discountedValue' => (float) number_format($discountedValue, 2, '.', ''),
+            ];
+        });
+
+        return response()->json([
+            'data' => $formattedResponse,
+            'pagination' => [
+                'current_page' => $reports->currentPage(),
+                'total_pages' => $reports->lastPage(),
+                'per_page' => $reports->perPage(),
+                'total' => $reports->total(),
+            ]
+        ], 200);
     }
 
     public function show($id)
