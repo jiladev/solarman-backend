@@ -167,7 +167,7 @@ class ReportController extends Controller
         $sort_options = request()->query('sort_options', '');
 
         $sort_options_array = array_filter(explode(',', $sort_options), function ($value) {
-            return !empty($value);
+            return $value !== '';
         });
 
         $sort_options_array = array_map('intval', $sort_options_array);
