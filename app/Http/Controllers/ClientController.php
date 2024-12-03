@@ -17,7 +17,7 @@ class ClientController extends Controller
         $phone = request()->query('phone');
         $limit = request()->query('limit', 10);
 
-        $query = Client::query('name', 'phone');
+        $query = Client::query();
 
         if ($name) {
             $query->where('name', 'like', "%$name%");
