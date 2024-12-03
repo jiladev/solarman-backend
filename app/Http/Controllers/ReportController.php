@@ -157,14 +157,18 @@ class ReportController extends Controller
         ])->deleteFileAfterSend(true);
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $client_id = request()->query('client_id');
         $user_id = request()->query('user_id');
         $name = request()->query('name');
         $phone = request()->query('phone');
         $limit = (int) request()->query('limit', 5);
-        $sort_options = $request->input('sort_options');
+        $sort_options = request()->query('sort_options', []);
+
+        if (!is_array($sort_options)) {
+            $sort_options = [0, 2, 0, 0];
+        }
 
         $query = Report::query();
 
