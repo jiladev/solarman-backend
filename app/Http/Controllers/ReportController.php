@@ -166,10 +166,6 @@ class ReportController extends Controller
         $limit = (int) request()->query('limit', 5);
         $sort_options = request()->query('sort_options', []);
 
-        if (!is_array($sort_options)) {
-            $sort_options = [0, 2, 0, 0];
-        }
-
         $query = Report::query();
 
         $query->join('clients', 'clients.id', '=', 'reports.client_id');
