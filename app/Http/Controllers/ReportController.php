@@ -164,7 +164,13 @@ class ReportController extends Controller
         $name = request()->query('name');
         $phone = request()->query('phone');
         $limit = (int) request()->query('limit', 5);
-        $sort_options = request()->query('sort_options', []);
+        $sort_options = request()->query('sort_options', '');
+
+        $sort_options_array = array_filter(explode(',', $sort_options), function ($value) {
+            return !empty($value);
+        });
+
+        $sort_options_array = array_map('intval', $sort_options_array);
 
         $query = Report::query();
 
@@ -186,20 +192,20 @@ class ReportController extends Controller
             $query->where('clients.phone', 'like', '%' . $phone . '%');
         }
 
-        if ($sort_options[0] !== 0) {
-            if ($sort_options[0] === 1) {
+        if ($sort_options_array[0] !== 0) {
+            if ($sort_options_array[0] === 1) {
                 $query->orderBy('clients.name', 'asc');
             } else {
                 $query->orderBy('clients.name', 'desc');
             }
-        } else if ($sort_options[1] !== 0) {
-            if ($sort_options[1] === 1) {
+        } else if ($sort_options_array[1] !== 0) {
+            if ($sort_options_array[1] === 1) {
                 $query->orderBy('reports.created_at', 'asc');
             } else {
                 $query->orderBy('reports.created_at', 'desc');
             }
-        } else if ($sort_options[2] !== 0 || $sort_options[3] !== 0) {
-            if ($sort_options[2] === 1 || $sort_options[3] === 1) {
+        } else if ($sort_options_array[2] !== 0 || $sort_options_array[3] !== 0) {
+            if ($sort_options_array[2] === 1 || $sort_options_array[3] === 1) {
                 $query->orderBy('reports.fatura_copel', 'asc');
             } else {
                 $query->orderBy('reports.fatura_copel', 'desc');
