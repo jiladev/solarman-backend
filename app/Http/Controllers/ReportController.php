@@ -163,20 +163,18 @@ class ReportController extends Controller
         $user_id = request()->query('user_id');
         $name = request()->query('name');
         $phone = request()->query('phone');
-        $limit = (int) request()->query('limit');
-
-        $perPage = $limit ? $limit : 5;
+        $limit = (int) request()->query('limit', 5);
 
         $query = Report::query();
 
         $query->join('clients', 'clients.id', '=', 'reports.client_id');
 
         if ($client_id) {
-            $query->where('client_id', $client_id);
+            $query->where('reports.client_id', $client_id);
         }
 
         if ($user_id) {
-            $query->where('user_id', $user_id);
+            $query->where('reports.user_id', $user_id);
         }
 
         if ($name) {
@@ -189,6 +187,8 @@ class ReportController extends Controller
 
         $query->orderBy('reports.created_at', 'desc');
 
+        $baseQuery = clone $query;
+
         $query->select(
             'reports.id',
             'reports.client_id',
@@ -198,7 +198,7 @@ class ReportController extends Controller
             'reports.fatura_copel',
         );
 
-        $reports = $query->paginate($perPage);
+        $reports = $query->paginate($limit, ['*'], 'page');
 
         $formattedResponse = $reports->getCollection()->map(function ($report) {
             $discountedValue = $report->fatura_copel - ($report->fatura_copel * 0.1355604396);
