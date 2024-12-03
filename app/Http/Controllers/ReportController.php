@@ -157,13 +157,14 @@ class ReportController extends Controller
         ])->deleteFileAfterSend(true);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $client_id = request()->query('client_id');
         $user_id = request()->query('user_id');
         $name = request()->query('name');
         $phone = request()->query('phone');
         $limit = (int) request()->query('limit', 5);
+        $sort_options = $request->input('sort_options');
 
         $query = Report::query();
 
@@ -185,7 +186,25 @@ class ReportController extends Controller
             $query->where('clients.phone', 'like', '%' . $phone . '%');
         }
 
-        $query->orderBy('reports.created_at', 'desc');
+        if ($sort_options[0] !== 0) {
+            if ($sort_options[0] === 1) {
+                $query->orderBy('clients.name', 'asc');
+            } else {
+                $query->orderBy('clients.name', 'desc');
+            }
+        } else if ($sort_options[1] !== 0) {
+            if ($sort_options[1] === 1) {
+                $query->orderBy('reports.created_at', 'asc');
+            } else {
+                $query->orderBy('reports.created_at', 'desc');
+            }
+        } else if ($sort_options[2] !== 0 || $sort_options[3] !== 0) {
+            if ($sort_options[2] === 1 || $sort_options[3] === 1) {
+                $query->orderBy('reports.fatura_copel', 'asc');
+            } else {
+                $query->orderBy('reports.fatura_copel', 'desc');
+            }
+        }
 
         $baseQuery = clone $query;
 
